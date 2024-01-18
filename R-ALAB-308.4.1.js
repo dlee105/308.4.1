@@ -2,54 +2,34 @@
 
 const { type } = require("os"); // idk where this comes from
 
-let csvData1 =
-  "Index,Mass (kg),Spring 1 (m),Spring 2 (m)\n1,0.00,0.050,0.050\n2,0.49,0.066,0.066\n3,0.98,0.087,0.080\n4,1.47,0.116,0.108\n5,1.96,0.142,0.138\n6,2.45,0.166,0.158\n7,2.94,0.193,0.174\n8,3.43,0.204,0.192\n9,3.92,0.226,0.205\n10,4.41,0.238,0.232";
-let csvData2 =
-  "ID,Name,Occupation,Age\n42,Bruce,Knight,41\n57,Bob,Fry Cook,19\n63,Blaine,Quiz Master,58\n98,Bill,Doctor’s Assistant,26";
-// PART 1
-console.log("\n-------------------PART 1-------------------\n");
-
 function csvDisplay(data) {
-  if (data.length === 0) {
-    return;
-  }
-  let result = "";
-  let temp = "";
-  let limit = data.length;
-  let index = 0;
-  while (index <= limit) {
-    if (data[index] === "\n" || index === limit) {
-      result += temp + "\n";
-      temp = "";
-    } else if (data[index] === ",") {
-      temp += " | ";
-    } else {
-      temp += data[index];
+  let row = [];
+
+  for (e of data.split("\n")) {
+    let col = [];
+    console.log(e.split(",").join(" | "));
+    for (i of e.split(",")) {
+      col.push(i);
     }
-    index++;
+    row.push(col);
   }
-  return result.slice(0, -1);
+  return row;
 }
 
-//display1 = csvDisplay(csvData1); "Set 1\n", display1, "\nSet 2\n",
-display2 = csvDisplay(csvData2);
-console.log(display2);
-
 // Part 2
-console.log("\n-------------------PART 2-------------------\n");
+
 function csvToArray(data) {
   let row = []; // outer array <- returning this
-  let col = []; // inner array, must reset per row
+
   //console.log(data.split("\n"));
 
   //for (element of data.split("\n")) {
   //  console.log(element.split(","));
   //}
-  let dataArray = data.split("\n");
-  for (r in dataArray) {
-    let temp = dataArray[r].split(",");
-    for (c in temp) {
-      col.push(temp[c]);
+  for (r of data.split("\n")) {
+    let col = []; // inner array, must reset per row
+    for (c of r.split(",")) {
+      col.push(c);
     }
     row.push(col);
     col = [];
@@ -62,11 +42,9 @@ function csvToArray(data) {
 //console.log("\n" + csvToArray(csvData2));
 //"Set 1\n", dataArray1, "\nSet 2\n",
 //dataArray1 = csvToArray(csvData1);
-dataArray2 = csvToArray(csvData2);
-console.log(dataArray2);
 
 // PART 3
-console.log("\n-------------------PART 3-------------------\n");
+
 function csvToJson(dataArray) {
   header = dataArray[0];
   valuesArr = dataArray.slice(1, dataArray.length); // removing header array from dataArray
@@ -99,10 +77,7 @@ function csvToJson(dataArray) {
 }
 
 //let json1 = csvToJson(dataArray1); "Set 1\n", json1, "\nSet 2\n", j
-let json2 = csvToJson(dataArray2);
-console.log(json2);
-console.log("\n-------------------PART 4-------------------\n");
-
+//Part
 let insert1 = { id: "48", name: "Barry", occupation: "Runner", age: "25" };
 let insert2 = { id: "7", name: "Bilbo", occupation: "None", age: "111" };
 
@@ -123,14 +98,15 @@ function removeObj(dataArray, index) {
 }
 
 function arrayIndexPush(dataArray, newObj, index) {
-  let newArray = [];
-  for (i in dataArray) {
-    if (i == index) {
-      newArray.push(newObj);
-    }
-    newArray.push(dataArray[i]);
-  }
-  return newArray;
+  // let newArray = [];
+  // for (i in dataArray) {
+  //   if (i == index) {
+  //     newArray.push(newObj);
+  //   }
+  //   newArray.push(dataArray[i]);
+  // }
+  dataArray.splice(index, 0, newObj);
+  return dataArray;
 }
 
 function pushLast(dataArray, newObj) {
@@ -138,15 +114,7 @@ function pushLast(dataArray, newObj) {
   return dataArray;
 }
 
-console.log("Current Array: \n", json2);
-json2 = removeObj(json2, -1);
-console.log("1. Removing last object\n", json2);
-json2 = arrayIndexPush(json2, insert1, 1);
-console.log("2. Inserting new object into the array at index 1\n", json2);
-json2 = pushLast(json2, insert2);
-console.log("3. Adding new object at the end of the array\n", json2);
-console.log("\n-------------------PART 5-------------------\n");
-
+//Part 5
 // ID,Name,Occupation,Age
 //\n42,Bruce,Knight,41
 //\n57,Bob,Fry Cook,19
@@ -158,7 +126,7 @@ function jsonToCSV(jsonData) {
   let dupCheck = []; // Adding unique keys | using this as header
   //console.log(jsonData);
   for (obj of jsonData) {
-    let currentKeys = Object.keys(obj);
+    let currentKeys = Object.keys(obj); // keys array [.. , .. , .. , ..]
     for (key of currentKeys) {
       // THIS INNER FORLOOP FINDS ALL UNIQUE KEYS IN THE JSON
       if (!dupCheck.includes(key)) {
@@ -175,5 +143,32 @@ function jsonToCSV(jsonData) {
   return dupCheck.join(",") + body;
 }
 
+// ---------------------------   EXECUTE CODES -------------------------- \\
+
+let csvData1 =
+  "Index,Mass (kg),Spring 1 (m),Spring 2 (m)\n1,0.00,0.050,0.050\n2,0.49,0.066,0.066\n3,0.98,0.087,0.080\n4,1.47,0.116,0.108\n5,1.96,0.142,0.138\n6,2.45,0.166,0.158\n7,2.94,0.193,0.174\n8,3.43,0.204,0.192\n9,3.92,0.226,0.205\n10,4.41,0.238,0.232";
+let csvData2 =
+  "ID,Name,Occupation,Age\n42,Bruce,Knight,41\n57,Bob,Fry Cook,19\n63,Blaine,Quiz Master,58\n98,Bill,Doctor’s Assistant,26";
+// PART 1
+
+//display1 = csvDisplay(csvData1); "Set 1\n", display1, "\nSet 2\n",
+console.log("\n-------------------PART 1-------------------\n");
+display2 = csvDisplay(csvData2);
+console.log("\nThis function returns\n", display2);
+console.log("\n-------------------PART 2-------------------\n");
+dataArray2 = csvToArray(csvData2);
+console.log(dataArray2);
+console.log("\n-------------------PART 3-------------------\n");
+let json2 = csvToJson(dataArray2);
+console.log(json2);
+console.log("\n-------------------PART 4-------------------\n");
+console.log("Current Array: \n", json2);
+json2 = removeObj(json2, -1);
+console.log("1. Removing last object\n", json2);
+json2 = arrayIndexPush(json2, insert1, 1);
+console.log("2. Inserting new object into the array at index 1\n", json2);
+json2 = pushLast(json2, insert2);
+console.log("3. Adding new object at the end of the array\n", json2);
+console.log("\n-------------------PART 5-------------------\n");
 let newCSV = jsonToCSV(json2);
 console.log(newCSV);
